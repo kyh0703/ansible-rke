@@ -10,9 +10,18 @@
       - docker
     state: present
 
-- name: chmod rke user
+- name: create ssh directory
+  become: yes
+  become_user: rke
   file:
-    path: $HOME/.ssh/
-    owner: rke
-    group: rke
-    mode: 700
+    path: $HOME/.ssh
+    mode: "0700"
+    state: directory
+
+- name: create ssh directory authorize
+  become: yes
+  become_user: rke
+  file:
+    path: $HOME/.ssh/authorized_keys
+    mode: "0600"
+    state: touch
