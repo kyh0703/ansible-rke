@@ -1,0 +1,9 @@
+---
+- name: Install Docker From Rancher
+  shell: "curl https://releases.rancher.com/install-docker/20.10.sh | sh"
+
+- name: Start Docker Service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes

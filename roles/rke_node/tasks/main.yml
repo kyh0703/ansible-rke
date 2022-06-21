@@ -1,0 +1,20 @@
+---
+# tasks file for rke_master
+# - name: Upgrade CentOS
+#   include: kernel.yml
+
+# Dependencies K8s Package
+- name: NTP Service
+  include: ntp.yml
+
+- name: Dependency K8s Package
+  include: k8s.yml
+
+- name: Install Docker
+  include: docker.yml
+
+- name: Dependency Ceph Storage
+  include: ceph.yml
+
+- name: Dependency RKE option
+  include: rke.yml

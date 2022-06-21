@@ -1,0 +1,18 @@
+# Ansible Playbook
+
+- name: Install RKE Handler
+  hosts: rke_handler
+  roles:
+    - andrewrothstein.rke
+
+- name: Setting RKE NODE
+  hosts:
+    - rke_masters
+    - rke_workers
+  roles:
+    - rke_node
+# - name: Add Rke User
+#   hosts: rke_handler
+#   ansible.builtin.user:
+#     name: rke
+#     generate_ssh_key: yes
