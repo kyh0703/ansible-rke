@@ -1,0 +1,7 @@
+rke_handler ansible_host=100.100.103.177 ansible_ssh_pass=dnflth
+
+[rke_masters]
+rke_master1 ansible_host=100.100.103.178 ansible_ssh_pass=dnflth
+
+[rke_workers]
+rke_worker1 ansible_host=100.100.103.179 ansible_ssh_pass=dnflth
