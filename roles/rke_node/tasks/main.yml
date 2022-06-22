@@ -4,17 +4,23 @@
 #   include: kernel.yml
 
 # Dependencies K8s Package
-# - name: NTP Service
-#   include: ntp.yml
+- name: NTP Service
+  include: ntp.yml
 
-# - name: Dependency K8s Package
-#   include: k8s.yml
+- name: Firewalld
+  include: firewalld.yml
 
-# - name: Install Docker
-#   include: docker.yml
+- name: Dependency K8s Package
+  include: k8s.yml
 
-# - name: Dependency Ceph Storage
-#   include: ceph.yml
+- name: Install Docker
+  include: docker.yml
+
+- name: Dependency Ceph Storage
+  include: ceph.yml
 
 - name: Dependency RKE option
   include: rke.yml
+
+- name: Install Helm
+  include: helm.yml

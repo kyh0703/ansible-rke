@@ -13,6 +13,13 @@
     permanent: true
     state: enabled
 
+- name: CertManager Port
+  firewalld:
+    immediate: true
+    port: 8080/tcp
+    permanent: true
+    state: enabled
+
 - name: Rancher agents port
   firewalld:
     immediate: true
