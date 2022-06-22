@@ -1,0 +1,32 @@
+---
+# tasks file for rke_master
+# - name: Upgrade CentOS
+#   include: kernel.yml
+
+# Dependencies K8s Package
+- name: ntp service
+  include: ntp.yml
+
+- name: disabled firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: stop
+    enabled: yes
+
+# - name: firewalld
+#   include: firewalld.yml
+
+- name: dependencies k8s package
+  include: k8s.yml
+
+- name: install docker
+  include: docker.yml
+
+- name: dependencies ceph storage
+  include: ceph.yml
+
+- name: dependencies rke option
+  include: rke.yml
+
+- name: install helm
+  include: helm.yml

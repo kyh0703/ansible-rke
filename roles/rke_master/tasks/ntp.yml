@@ -1,0 +1,11 @@
+---
+- name: Install NTP
+  yum:
+    name: ntp
+    state: latest
+
+- name: Start NTPD
+  ansible.builtin.service:
+    name: ntpd
+    state: restarted
+    enabled: yes

@@ -1,0 +1,28 @@
+# Ansible Playbook
+# - name: install master node
+#   hosts:
+#     - masters
+#   roles:
+#     - rke_master
+
+# - name: install worker node
+#   hosts:
+#     - workers
+#   roles:
+#     - rke_worker
+
+- name: Shared RKE User
+  hosts:
+    - all
+  tasks:
+    - include: ./tasks/known_host.yml
+    - include: ./tasks/etc_hosts.yml
+    - include: ./tasks/shared_rsa_pub.yml
+
+- name: Install RKE
+  hosts:
+    - rke_handler
+  roles:
+    - andrewrothstein.rke
+  tasks:
+    - include: ./tasks/create_rke_user.yml
