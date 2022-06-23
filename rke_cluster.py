@@ -12,22 +12,22 @@ cluster_data = {
 #     vegetables = yaml.load(f, Loader=yaml.FullLoader)
 #     print(vegetables)
 
-def make_master(ip):
+def make_master(host):
     master = dict()
-    master["address"] = ip
+    master["address"] = host
     master["user"] = "rke"
     master["port"] = 22
-    master["roles"] = ["controlplane", "etcd"]
+    master["role"] = ["controlplane", "etcd"]
     master["docker_socket"] = "/var/run/docker.sock"
     master["ssh_key_path"] = "~/.ssh/id_rsa"
     cluster_data["nodes"].append(master)
 
-def make_worker(ip):
+def make_worker(host):
     worker = dict()
-    worker["address"] = ip
+    worker["address"] = host
     worker["user"] = "rke"
     worker["port"] = 22
-    worker["roles"] = ["worker"]
+    worker["role"] = ["worker"]
     worker["docker_socket"] = "/var/run/docker.sock"
     worker["ssh_key_path"] = "~/.ssh/id_rsa"
     cluster_data["nodes"].append(worker)

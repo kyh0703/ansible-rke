@@ -10,7 +10,7 @@
 - name: disabled firewalld
   ansible.builtin.service:
     name: firewalld
-    state: stop
+    state: stopped
     enabled: yes
 
 # - name: firewalld

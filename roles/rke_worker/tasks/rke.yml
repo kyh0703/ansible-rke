@@ -4,15 +4,15 @@
 
 - name: create rke user
   ansible.builtin.user:
-    name: rke
-    password: "rke"
+    name: "{{ rke_user }}"
+    password: "{{ rke_user_password | password_hash('sha512') }}"
     groups:
       - docker
     state: present
 
 - name: create ssh directory
   become: yes
-  become_user: rke
+  become_user: "{{ rke_user }}"
   file:
     path: $HOME/.ssh
     mode: "0700"
@@ -20,7 +20,7 @@
 
 - name: create ssh directory authorize
   become: yes
-  become_user: rke
+  become_user: "{{ rke_user }}"
   file:
     path: $HOME/.ssh/authorized_keys
     mode: "0600"

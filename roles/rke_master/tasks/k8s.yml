@@ -15,3 +15,17 @@
       net.ipv4.ip_forward = 1
       EOF
     - sysctl --system
+
+- name: Get kubectl stable version
+  register: latest_kubectl
+  ansible.builtin.uri:
+    url: https://dl.k8s.io/release/stable.txt
+    return_content: yes
+
+- name: download kubectl
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/{{ latest_kubectl.content }}/bin/linux/amd64/kubectl"
+    dest: /root
+
+- name: install kubectl
+  shell: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl

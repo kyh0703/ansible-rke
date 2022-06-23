@@ -1,14 +1,14 @@
 ---
 - name: ssh-keygen ansible-server
   become: yes
-  become_user: rke
+  become_user: "{{ rke_user }}"
   command: "ssh-keygen -b 2048 -t rsa -f /home/rke/.ssh/id_rsa -q -N ''"
   ignore_errors: yes
   run_once: true
 
 - name: import id_rsa.pub
   become: yes
-  become_user: rke
+  become_user: "{{ rke_user }}"
   command: "cat /home/rke/.ssh/id_rsa.pub"
   register: id_pub
   run_once: true

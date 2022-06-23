@@ -1,7 +1,7 @@
 ---
 - ansible.builtin.user:
-    name: rke
-    password: "rke"
+    name: "{{ rke_user }}"
+    password: "{{ rke_user_password }}"
     state: present
     generate_ssh_key: yes
     ssh_key_bits: 2048
