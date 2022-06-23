@@ -1,48 +1,30 @@
 # Ansible Playbook
+- name: install master node
+  hosts:
+    - rke_masters
+  roles:
+    - rke_master
 
-- name: install kubectl
+- name: install worker node
   hosts:
     - rke_workers
+  roles:
+    - rke_worker
+
+- name: Shared RKE User
+  hosts:
+    - all
   tasks:
-    - name: Get kubectl stable version
-      register: latest_kubectl
-      ansible.builtin.uri:
-        url: https://dl.k8s.io/release/stable.txt
-        return_content: yes
+    - include: ./tasks/known_host.yml
+    - include: ./tasks/etc_hosts.yml
+    - include: ./tasks/shared_rsa_pub.yml
 
-    - name: download kubectl
-      ansible.builtin.get_url:
-        url: "https://dl.k8s.io/release/{{ latest_kubectl.content }}/bin/linux/amd64/kubectl"
-        dest: /root
-
-    - name: install kubectl
-      shell: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-# - name: install master node
-#   hosts:
-#     - rke_masters
-#   roles:
-#     - rke_master
-
-# - name: install worker node
-#   hosts:
-#     - rke_workers
-#   roles:
-#     - rke_worker
-
-# - name: Shared RKE User
-#   hosts:
-#     - all
-#   tasks:
-#     - include: ./tasks/known_host.yml
-#     - include: ./tasks/etc_hosts.yml
-#     - include: ./tasks/shared_rsa_pub.yml
-
-# - name: Install RKE
-#   hosts:
-#     - rke_handler
-#   roles:
-#     - andrewrothstein.rke
-#   tasks:
-#     - include: ./tasks/create_rke_user.yml
-#     - include: ./tasks/install_python.yml
-#     - include: ./tasks/copy_cluster.yml
+- name: Install RKE
+  hosts:
+    - rke_handler
+  roles:
+    - andrewrothstein.rke
+  tasks:
+    - include: ./tasks/create_rke_user.yml
+    - include: ./tasks/install_python.yml
+    - include: ./tasks/copy_cluster.yml
