@@ -1,0 +1,5 @@
+---
+- name: RKE Up
+  become: true
+  become_user: "{{ rke_user }}"
+  shell: "/usr/local/bin/rke up --config /home/rke/cluster.yml"

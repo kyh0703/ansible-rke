@@ -1,9 +1,19 @@
 ---
-- name: install docker from rancher
-  shell: "curl https://releases.rancher.com/install-docker/20.10.sh | sh"
+- name: Download docker install shall from rancher
+  get_url:
+    url: "https://releases.rancher.com/install-docker/20.10.sh"
+    dest: ./get_docker.sh
 
-- name: start docker service
+- name: Install docker
+  shell: "sh get_docker.sh"
+
+- name: Start docker service
   ansible.builtin.service:
     name: docker
     state: started
     enabled: yes
+
+- name: Delete Docker Shall
+  ansible.builtin.file:
+    path: "./get_docker.sh"
+    state: absent

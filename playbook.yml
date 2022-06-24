@@ -1,30 +1,43 @@
 # Ansible Playbook
-- name: install master node
+# - name: install master node
+#   hosts:
+#     - rke_masters
+#   roles:
+#     - rke_master
+
+# - name: install worker node
+#   hosts:
+#     - rke_workers
+#   roles:
+#     - rke_worker
+
+# - name: Shared RKE User
+#   hosts:
+#     - all
+#   tasks:
+#     - include: ./tasks/known_host.yml
+#     - include: ./tasks/etc_hosts.yml
+#     - include: ./tasks/shared_rsa_pub.yml
+
+# - name: Install RKE
+#   hosts:
+#     - rke_masters
+#     - rke_workers
+#   roles:
+#     - andrewrothstein.rke
+#   tasks:
+
+#     - include: ./tasks/make_cluster.yml
+
+- name: Rke UP
+  become: true
+  become_user: "{{ rke_user }}"
   hosts:
     - rke_masters
-  roles:
-    - rke_master
-
-- name: install worker node
-  hosts:
     - rke_workers
-  roles:
-    - rke_worker
-
-- name: Shared RKE User
-  hosts:
-    - all
   tasks:
-    - include: ./tasks/known_host.yml
-    - include: ./tasks/etc_hosts.yml
-    - include: ./tasks/shared_rsa_pub.yml
-
-- name: Install RKE
-  hosts:
-    - rke_handler
-  roles:
-    - andrewrothstein.rke
-  tasks:
+    - include: ./tasks/rke_up.yml
     - include: ./tasks/create_rke_user.yml
+    - include: ./tasks/make_cluster.yml
     - include: ./tasks/install_python.yml
-    - include: ./tasks/copy_cluster.yml
+  when: ansible_play_hosts == "rke_master1"

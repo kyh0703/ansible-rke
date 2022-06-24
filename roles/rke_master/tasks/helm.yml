@@ -1,8 +1,16 @@
 ---
-- name: install helm
-  shell: "{{ item }}"
-  with_items:
-    - "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"
-    - "chmod 700 get_helm.sh"
-    - "./get_helm.sh"
-  ignore_errors: yes
+- name: Download helm
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"
+    dest: ./get_helm.sh
+    mode: "0700"
+
+- name: Install Helm
+  shell: "./get_helm.sh"
+  register: helm_result
+  ignore_errors: true
+
+- name: Delete Helm Shell
+  ansible.builtin.file:
+    path: "./get_helm.sh"
+    state: absent

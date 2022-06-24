@@ -2,20 +2,20 @@
 - name: update yum
   shell: "yum -y update"
 
-- name: install yum-plugin
+- name: Install yum-plugin
   yum:
     name: "yum-plugin-fastestmirror"
     state: present
 
-- name: register eplrepo GPG-KEY
+- name: Register eplrepo GPG-KEY
   shell: "rpm -import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org"
 
-- name: install elrepo repoistory
+- name: Install elrepo repoistory
   yum:
     name: "https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm"
     state: present
 
-- name: install new kernel
+- name: Install new kernel
   yum:
     name: "{{ item }}"
     state: present
@@ -24,11 +24,11 @@
     - "kernel-ml"
     - "kernel-ml-devel"
 
-- name: set kernel version
+- name: Set kernel version
   register: latest_kernel_version
   shell: 'grep ^menuentry /boot/grub2/grub.cfg | cut -d "''" -f2 | head -1'
 
-- name: default kernel version
+- name: Default kernel version
   debug:
     var: latest_kernel_version
 

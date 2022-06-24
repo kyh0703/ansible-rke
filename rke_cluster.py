@@ -1,16 +1,9 @@
+from ast import literal_eval
 import yaml
-import sys
+import argparse
 
-cluster_data = {
-    "nodes": [],
-    "ignore_docker_version": False,
-    "ssh_key_path": "~/.ssh/id_rsa",
-    "ssh_agent_auth": False
-}
-
-# with open("./playbook.yml") as f:
-#     vegetables = yaml.load(f, Loader=yaml.FullLoader)
-#     print(vegetables)
+with open('/opt/cluster.yml') as f:
+    cluster_data = yaml.load(f, Loader=yaml.FullLoader)
 
 def make_master(host):
     master = dict()
@@ -32,13 +25,16 @@ def make_worker(host):
     worker["ssh_key_path"] = "~/.ssh/id_rsa"
     cluster_data["nodes"].append(worker)
 
-def save_cluster_yml():
-    with open("./cluster.yml", "w") as fw:
-        yaml.dump(cluster_data, fw)
+parser = argparse.ArgumentParser(prog="make rke cluster.yaml")
+parser.add_argument('--host', help='rke node real ip address')
+parser.add_argument('--role', help='rke node role')
+args = parser.parse_args()
+print(args)
 
-if __name__ == "__main__":
-    argument = sys.argv
-    del argument[0]
-    make_master("100.100.103.178")
-    make_worker("100.100.103.179")
-    save_cluster_yml()
+if "master" in args.role:
+    make_master(args.host)
+elif "worker" in args.role:
+    make_worker(args.host)
+
+with open("/opt/cluster.yml", "w") as fw:
+    yaml.dump(cluster_data, fw)

@@ -1,25 +1,29 @@
 ---
-- name: ssh server configuration
-  shell: "sed -i 's/^#AllowTcpForwarding no$/AllowTcpForwarding yes/' /etc/ssh/sshd_config"
+- name: Ensure Allow Tcp Forwarding yes
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#AllowTcpForwarding "
+    line: AllowTcpForwarding yes
 
-- name: create rke user
+- name: Create rke user
   ansible.builtin.user:
     name: "{{ rke_user }}"
     password: "{{ rke_user_password | password_hash('sha512') }}"
+    update_password: on_create
     groups:
       - docker
     state: present
 
-- name: create ssh directory
-  become: yes
+- name: Create ssh directory
+  become: true
   become_user: "{{ rke_user }}"
   file:
     path: $HOME/.ssh
     mode: "0700"
     state: directory
 
-- name: create ssh directory authorize
-  become: yes
+- name: Create ssh directory authorize
+  become: true
   become_user: "{{ rke_user }}"
   file:
     path: $HOME/.ssh/authorized_keys

@@ -48,7 +48,7 @@
     permanent: true
     state: enabled
 
-- name: nginx ingress's validating webhook port
+- name: Nginx ingress's validating webhook port
   firewalld:
     immediate: true
     port: 8443/tcp

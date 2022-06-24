@@ -1,5 +1,0 @@
----
-- name: Copy source code
-  copy:
-    src: rke_cluster.py
-    dest: /home/rke

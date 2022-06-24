@@ -28,5 +28,5 @@
 - name: dependencies rke option
   include: rke.yml
 
-- name: install helm
+- name: Install helm
   include: helm.yml
