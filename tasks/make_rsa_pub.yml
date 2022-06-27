@@ -1,0 +1,16 @@
+---
+- name: Generate an OpenSSH keypair
+  become: true
+  become_user: "{{ rke_user }}"
+  openssh_keypair:
+    path: /home/{{ rke_user }}/.ssh/id_rsa
+    owner: "{{ rke_user }}"
+    group: "{{ rke_user }}"
+    size: 2048
+
+- name: Get id_rsa.pub From RKE Home directory
+  become: true
+  become_user: "{{ rke_user }}"
+  command: "cat /home/{{ rke_user }}/.ssh/id_rsa.pub"
+  register: id_pub
+  run_once: true

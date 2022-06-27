@@ -6,9 +6,9 @@
     mode: "0700"
 
 - name: Install Helm
-  shell: "./get_helm.sh"
-  register: helm_result
-  ignore_errors: true
+  ansible.builtin.command: "./get_helm.sh"
+  register: helm_install_result
+  failed_when: "'Fail' in helm_install_result.stderr"
 
 - name: Delete Helm Shell
   ansible.builtin.file:
