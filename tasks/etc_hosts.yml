@@ -1,6 +1,0 @@
----
-- name: gen etc hosts
-  lineinfile:
-    path: /etc/hosts
-    line: "{{ hostvars[item]['ansible_facts']['default_ipv4']['address'] }} {{ hostvars[item]['ansible_facts']['hostname'] }}"
-  loop: "{{ ansible_play_hosts }}"

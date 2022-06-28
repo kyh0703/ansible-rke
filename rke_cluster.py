@@ -2,7 +2,7 @@ from ast import literal_eval
 import yaml
 import argparse
 
-with open('/opt/cluster.yml') as f:
+with open('./cluster.yml') as f:
     cluster_data = yaml.load(f, Loader=yaml.FullLoader)
 
 def make_master(host):
@@ -36,5 +36,5 @@ if "master" in args.role:
 elif "worker" in args.role:
     make_worker(args.host)
 
-with open("/opt/cluster.yml", "w") as fw:
+with open("./cluster.yml", "w") as fw:
     yaml.dump(cluster_data, fw)

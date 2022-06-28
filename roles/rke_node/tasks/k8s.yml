@@ -39,3 +39,19 @@
   ansible.builtin.file:
     path: "./get_helm.sh"
     state: absent
+
+- name: Yum Install BashCompletion
+  yum:
+    name: bash-completion
+    state: present
+
+- name: Source BashCompletion
+  shell: "kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null"
+
+- name: Add a line Kubectl Alias
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: "{{ item }}"
+  with_items:
+    - alias k=kubectl
+    - complete -F __start_kubectl k

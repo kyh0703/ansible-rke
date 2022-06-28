@@ -1,36 +1,27 @@
 # Ansible Playbook
 # - name: install master node
+#   gather_facts: false
 #   hosts:
 #     - rke_masters
-#   roles:
-#     - rke_master
-# - name: install worker node
-#   hosts:
 #     - rke_workers
 #   roles:
-#     - rke_worker
+#     - rke_node
 
-- name: Install RKE
-  hosts:
-    - rke_worker1
-  roles:
-    - andrewrothstein.rke
+# - name: Shared RKE User
+#   gather_facts: true
+#   hosts:
+#     - all
+#   tasks:
+#     - include: ./tasks/host_requirements.yml
 
-- name: Shared RKE User
+- name: RKE Handler Provisioning
+  gather_facts: false
   hosts:
-    - all
+    - rke_master1
+  # roles:
+  #   - andrewrothstein.rke
   tasks:
-    - include: ./tasks/known_host.yml
-    - include: ./tasks/etc_hosts.yml
-
-- name: RKE User Provisioning
-  hosts:
-    - rke_worker1
-  become: true
-  become_user: "{{ rke_user }}"
-  tasks:
-    - include: ./tasks/make_rsa_pub.yml
-    - include: ./tasks/shared_rke_pub.yml
+    - include: ./tasks/rke_provisioning.yml
 
 - name: RKE Up
   become: true
@@ -39,9 +30,7 @@
     - rke_masters
     - rke_workers
   tasks:
-    - include: ./tasks/make_cluster.yml
-      when: inventory_hostname == "rke_master1"
-    - include: ./tasks/install_python.yml
-      when: inventory_hostname == "rke_master1"
     - include: ./tasks/rke_up.yml
       when: inventory_hostname == "rke_master1"
+    # - include: ./tasks/rke_install_helm.yml
+    #   when: inventory_hostname == "rke_master1"

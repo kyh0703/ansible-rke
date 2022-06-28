@@ -1,4 +1,0 @@
----
-# vars file for rke_worker
-rke_user: rke
-rke_user_password: dnflth

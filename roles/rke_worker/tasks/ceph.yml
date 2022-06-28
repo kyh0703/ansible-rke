@@ -1,5 +1,0 @@
----
-- name: Install LVM2
-  yum:
-    name: lvm2
-    state: present

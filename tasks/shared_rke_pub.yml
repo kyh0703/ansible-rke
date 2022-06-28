@@ -1,9 +1,0 @@
----
-- name: Get id_rsa.pub From RKE Home directory
-  command: "cat /home/{{ rke_user }}/.ssh/id_rsa.pub"
-  register: id_pub
-
-- name: Add ansible-node authorized keys
-  lineinfile:
-    dest: /home/{{ rke_user }}/.ssh/authorized_keys
-    line: "{{ id_pub.stdout }}"
