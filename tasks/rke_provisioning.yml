@@ -17,7 +17,7 @@
   become: true
   become_user: "{{ rke_user }}"
   openssh_keypair:
-    path: $HOME/{{ rke_user }}/.ssh/id_rsa
+    path: $HOME/.ssh/id_rsa
     owner: "{{ rke_user }}"
     group: "{{ rke_user }}"
     size: 2048
@@ -25,12 +25,12 @@
 - name: Get id_rsa.pub From RKE Home directory
   become: true
   become_user: "{{ rke_user }}"
-  command: "cat $HOME/{{ rke_user }}/.ssh/id_rsa.pub"
+  command: "cat $HOME/.ssh/id_rsa.pub"
   register: id_pub
 
 - name: Add ansible-node authorized keys
   become: true
   become_user: "{{ rke_user }}"
   lineinfile:
-    dest: $HOME/{{ rke_user }}/.ssh/authorized_keys
+    dest: $HOME/.ssh/authorized_keys
     line: "{{ id_pub.stdout }}"

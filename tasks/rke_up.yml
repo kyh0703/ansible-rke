@@ -2,7 +2,7 @@
 - name: Copy source code
   copy:
     src: "{{ item }}"
-    dest: "$HOME/{{ rke_user }}"
+    dest: "$HOME"
   with_items:
     - "cluster.yml"
     - "rke_cluster.py"
@@ -11,12 +11,12 @@
   shell: 'python3 rke_cluster.py --host "{{ hostvars[item][''ansible_facts''][''default_ipv4''][''address''] }}" --role "{{ item }}"'
   loop: "{{ ansible_play_hosts }}"
   args:
-    chdir: $HOME/{{ rke_user }}
+    chdir: $HOME
 
 - name: RKE Up
-  shell: "/usr/local/bin/rke up --config $HOME/rke/cluster.yml"
+  shell: "/usr/local/bin/rke up --config $HOME/cluster.yml"
   args:
-    chdir: $HOME/{{ rke_user }}
+    chdir: $HOME
 
 - name: Create .kube directory authorize
   file:
