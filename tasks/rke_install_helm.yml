@@ -2,29 +2,24 @@
 - name: Add rancher stable Helm repository
   shell: "{{ item }}"
   with_items:
-    - "helm repo add rancher-stable https://releases.rancher.com/server-charts/stable"
-    - "helm repo add jetstack https://charts.jetstack.io"
-    - "helm repo update"
-
-- name: create namespace
-  shell: "{{ item }}"
-  with_items:
-    - "kubectl create namespace cattle-system"
-    - "kubectl create namespace cert-manager"
+    - "/usr/local/bin/helm repo add rancher-stable https://releases.rancher.com/server-charts/stable"
+    - "/usr/local/bin/helm repo add jetstack https://charts.jetstack.io"
+    - "/usr/local/bin/helm repo update"
 
 - name: Apply Cert Manager in k8s
-  shell: "kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.5.1/cert-manager.crds.yaml"
+  shell: "/usr/local/bin/kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.5.1/cert-manager.crds.yaml"
 
-- name: Helm Install Certmanager
+- name: Deploy CertManager chart
   shell: |
-    helm install cert-manager jetstack/cert-manager \
+    /usr/local/bin/helm install cert-manager jetstack/cert-manager \
     --namespace cert-manager \
     --create-namespace \
     --version v1.5.1
 
-- name: Helm Install Rancher
+- name: Deploy Helm chart
   shell: |
-    helm install rancher rancher-stable/rancher \
+    /usr/local/bin/helm install rancher rancher-stable/rancher \
     --namespace cattle-system \
+    --create-namespace \
     --set hostname=rancher.my.org \
     --set replicas=3

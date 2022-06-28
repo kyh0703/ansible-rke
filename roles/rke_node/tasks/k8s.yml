@@ -55,3 +55,6 @@
   with_items:
     - alias k=kubectl
     - complete -F __start_kubectl k
+
+- name: Source Bashrc
+  shell: source ~/.bashrc

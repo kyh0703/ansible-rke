@@ -16,9 +16,30 @@
 - name: RKE Up
   shell: "/usr/local/bin/rke up --config $HOME/rke/cluster.yml"
   args:
-    chdir: /home/{{ rke_user }}
+    chdir: $HOME/{{ rke_user }}
+
+- name: Create .kube directory authorize
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: "0700"
+
+- name: Create .kube config
+  file:
+    path: $HOME/.kube/config
+    state: touch
+    mode: "0600"
 
 - name: Set Default kubeconfig
-  ansible.builtin.copy:
-    src: $HOME/kube_config_cluster.yml
-    dest: $HOME/.kube/config
+  shell: "cp $HOME/kube_config_cluster.yml $HOME/.kube/config"
+
+- name: Add a line Kubectl Alias
+  ansible.builtin.lineinfile:
+    path: $HOME/.bashrc
+    line: "{{ item }}"
+  with_items:
+    - alias k=kubectl
+    - complete -F __start_kubectl k
+
+- name: Source Bashrc
+  shell: source $HOME/.bashrc
