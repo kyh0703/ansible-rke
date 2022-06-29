@@ -7,7 +7,7 @@
     - "/usr/local/bin/helm repo update"
 
 - name: Apply Cert Manager in k8s
-  shell: "/usr/local/bin/kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.5.1/cert-manager.crds.yaml"
+  shell: "/usr/local/bin/kubectl apply -f 'https://github.com/cert-manager/cert-manager/releases/download/v1.5.1/cert-manager.crds.yaml'"
 
 - name: Deploy CertManager chart
   shell: |

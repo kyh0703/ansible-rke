@@ -1,0 +1,29 @@
+# Ansible Playbook
+# - name: install master node
+#   hosts:
+#     - rke_masters
+#     - rke_workers
+#   roles:
+#     - rke_node
+#   tasks:
+#     - include: ./tasks/host_requirements.yml
+
+# - name: RKE Handler Provisioning
+#   gather_facts: false
+#   hosts:
+#     - rke_master1
+#   roles:
+#     - andrewrothstein.rke
+
+- name: RKE Up
+  become: true
+  become_user: "{{ rke_user }}"
+  hosts:
+    - rke_masters
+    - rke_workers
+  tasks:
+    - include: ./tasks/rke_provisioning.yml
+    - include: ./tasks/rke_up.yml
+      when: inventory_hostname == "rke_master1"
+    - include: ./tasks/rke_install_helm.yml
+      when: inventory_hostname == "rke_master1"

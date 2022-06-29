@@ -1,0 +1,33 @@
+---
+- name: Download docker install shall from rancher
+  ansible.builtin.get_url:
+    url: "https://releases.rancher.com/install-docker/20.10.sh"
+    dest: $HOME/get_docker.sh
+  register: download
+  until: download.status_code == 200
+  delay: 3
+  retries: 3
+
+- name: Debug
+  debug:
+    var: download
+
+- name: Chmod Docker Install Shell
+  become: true
+  ansible.builtin.file:
+    path: $HOME/get_docker.sh
+    mode: 0700
+
+- name: Install docker
+  shell: $HOME/get_docker.sh
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Delete Docker Shall
+  ansible.builtin.file:
+    path: $HOME/get_docker.sh
+    state: absent

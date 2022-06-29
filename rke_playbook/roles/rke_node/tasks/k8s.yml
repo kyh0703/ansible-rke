@@ -31,6 +31,10 @@
   ansible.builtin.get_url:
     url: "https://dl.k8s.io/release/{{ latest_kubectl.content }}/bin/linux/amd64/kubectl"
     dest: /root
+  register: download
+  until: download.status_code == 200
+  delay: 10
+  retries: 3
 
 - name: Install kubectl
   shell: install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl

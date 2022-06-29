@@ -1,0 +1,20 @@
+---
+- name: Generate an OpenSSH keypair
+  run_once: true
+  openssh_keypair:
+    path: $HOME/.ssh/id_rsa
+    owner: "{{ rke_user }}"
+    group: "{{ rke_user }}"
+    size: 2048
+  when: inventory_hostname == "rke_master1"
+
+- name: Get id_rsa.pub From RKE Home directory
+  run_once: true
+  command: "cat $HOME/.ssh/id_rsa.pub"
+  register: id_pub
+  when: inventory_hostname == "rke_master1"
+
+- name: Add ansible-node authorized keys
+  lineinfile:
+    dest: $HOME/.ssh/authorized_keys
+    line: "{{ id_pub.stdout }}"
