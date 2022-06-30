@@ -1,29 +1,54 @@
-# Ansible Playbook
-# - name: install master node
-#   hosts:
-#     - rke_masters
-#     - rke_workers
-#   roles:
-#     - rke_node
-#   tasks:
-#     - include: ./tasks/host_requirements.yml
+# Ansible Node에 Known_hosts를 위한 task
+- name: known hosts
+  connection: local
+  serial: 1
+  gather_facts: false
+  hosts:
+    - all
+  tasks:
+    - include: ./tasks/known_hosts.yml
 
-# - name: RKE Handler Provisioning
-#   gather_facts: false
-#   hosts:
-#     - rke_master1
-#   roles:
-#     - andrewrothstein.rke
+# rke Node에 etc_hosts 적용
+- name: Set etc hosts
+  hosts:
+    - all
+  tasks:
+    - include: ./tasks/etc_hosts.yml
 
-- name: RKE Up
+# RKE Node 설치
+- name: install master node
+  gather_facts: false
+  hosts:
+    - rke_masters
+    - rke_workers
+  roles:
+    - rke_node
+  tasks:
+    - include: ./tasks/host_requirements.yml
+
+# RKE 최신 버전 설치
+- name: RKE Handler Provisioning
+  gather_facts: false
+  hosts:
+    - rke_master1
+  roles:
+    - andrewrothstein.rke
+
+# RKE UP
+- name: rke up
   become: true
   become_user: "{{ rke_user }}"
   hosts:
     - rke_masters
     - rke_workers
   tasks:
-    - include: ./tasks/rke_provisioning.yml
     - include: ./tasks/rke_up.yml
-      when: inventory_hostname == "rke_master1"
+
+# Helm Install
+- name: rke install
+  become: true
+  become_user: "{{ rke_user }}"
+  hosts:
+    - rke_master1
+  tasks:
     - include: ./tasks/rke_install_helm.yml
-      when: inventory_hostname == "rke_master1"

@@ -1,3 +1,4 @@
 ---
 rke_user: rke
 rke_user_password: dnflth
+rke_handle_node: rke_master1

@@ -1,22 +1,4 @@
 ---
-- name: ssh-keyscan for known_hosts file
-  command: /usr/bin/ssh-keyscan -t ecdsa {{ ansible_host }}
-  register: keyscan
-
-- name: input key
-  lineinfile:
-    path: ~/.ssh/known_hosts
-    line: "{{ item }}"
-    create: yes
-  with_items:
-    - "{{ keyscan.stdout_lines }}"
-
-- name: gen etc hosts
-  lineinfile:
-    path: /etc/hosts
-    line: "{{ hostvars[item]['ansible_facts']['default_ipv4']['address'] }} {{ hostvars[item]['ansible_facts']['hostname'] }}"
-  loop: "{{ ansible_play_hosts }}"
-
 - name: Install all required dependencies
   yum:
     name:

@@ -22,10 +22,13 @@
   shell: sysctl --system
 
 - name: Get kubectl stable version
-  register: latest_kubectl
   ansible.builtin.uri:
     url: https://dl.k8s.io/release/stable.txt
     return_content: yes
+  register: latest_kubectl
+  until: latest_kubectl.status == 200
+  delay: 10
+  retries: 3
 
 - name: Download kubectl
   ansible.builtin.get_url:

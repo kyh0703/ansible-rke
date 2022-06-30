@@ -28,10 +28,6 @@
   register: latest_kernel_version
   shell: 'grep ^menuentry /boot/grub2/grub.cfg | cut -d "''" -f2 | head -1'
 
-- name: Default kernel version
-  debug:
-    var: latest_kernel_version
-
 - name: Setting Latest Kernel Version
   shell: 'grub2-set-default "{{ latest_kernel_version.stdout }}"'
 

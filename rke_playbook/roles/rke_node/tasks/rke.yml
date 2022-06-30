@@ -5,6 +5,12 @@
     regexp: "^#AllowTcpForwarding "
     line: AllowTcpForwarding yes
 
+- name: Ensure Allow Tcp Forwarding yes
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#PermitTunnel "
+    line: PermitTunnel yes
+
 - name: Create rke user
   ansible.builtin.user:
     name: "{{ rke_user }}"

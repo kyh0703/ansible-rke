@@ -1,13 +1,39 @@
 ---
-- name: Copy source code
+- name: RKE Known hosts
+  include: ./known_hosts.yml
+  delegate_to: rke_master1
+
+- name: Generate an OpenSSH keypair
+  openssh_keypair:
+    path: $HOME/.ssh/id_rsa
+    owner: "{{ rke_user }}"
+    group: "{{ rke_user }}"
+    size: 2048
+  delegate_to: rke_master1
+  run_once: true
+
+- name: Get id_rsa.pub From RKE Home directory
+  command: "cat $HOME/.ssh/id_rsa.pub"
+  register: id_pub
+  delegate_to: rke_master1
+  run_once: true
+
+- name: Add ansible-node authorized keys
+  lineinfile:
+    dest: $HOME/.ssh/authorized_keys
+    line: "{{ id_pub.stdout }}"
+
+- name: Copy python code
   copy:
     src: "{{ item }}"
     dest: "$HOME"
   with_items:
     - "cluster.yml"
     - "rke_cluster.py"
+  delegate_to: rke_master1
+  run_once: true
 
-- name: Make cluster yaml
+- name: Make cluster.yaml
   shell: |
     python3 rke_cluster.py \
       --host {{ hostvars[item]['ansible_facts']['hostname'] }} \
@@ -16,11 +42,15 @@
   loop: "{{ ansible_play_hosts }}"
   args:
     chdir: $HOME
+  delegate_to: rke_master1
+  run_once: true
 
-- name: RKE Up
-  shell: "/usr/local/bin/rke up --config $HOME/cluster.yml"
+- name: Command rke up
+  shell: "/usr/local/bin/rke up --config cluster.yml"
   args:
     chdir: $HOME
+  delegate_to: rke_master1
+  run_once: true
 
 - name: Create .kube directory authorize
   file:
@@ -34,8 +64,12 @@
     state: touch
     mode: "0600"
 
-- name: Set Default kubeconfig
-  shell: "cp $HOME/kube_config_cluster.yml $HOME/.kube/config"
+- name: Copy kubeconfig
+  shell: "cp kube_config_cluster.yml .kube/config"
+  args:
+    chdir: $HOME
+  delegate_to: rke_master1
+  run_once: true
 
 - name: Add a line Kubectl Alias
   ansible.builtin.lineinfile:
@@ -48,49 +82,9 @@
 - name: Source Bashrc
   shell: source $HOME/.bashrc
 
-- name: Wait for all control-plane pods become created
-  shell: |
-    /usr/local/bin/kubectl get po \
-      --namespace=kube-system \
-      --selector k8s-app \
-      --output=jsonpath='{.items[*].metadata.name}'
-  register: control_plane_pods_created
-  until: "item in control_plane_pods_created.stdout"
-  retries: 10
-  delay: 30
-  with_items:
-    - calico
-    - canal
-    - coredns-autoscaler
-    - metrics-server
-
-- name: Wait for control-plane pods become ready
-  shell: |
-    /usr/local/bin/kubectl wait \
-      --namespace=kube-system \
-      --selector k8s-app \
-      --for=condition=Ready pods \
-      --timeout=600s
-  register: control_plane_pods_ready
-
-- name: Wait for ingress nginx pods become created
-  shell: |
-    /usr/local/bin/kubectl get po \
-      --namespace=ingress-nginx \
-      --selector app=ingress-nginx \
-      --output=jsonpath='{.items[*].metadata.name}'
-  register: ingress_controller_pods_created
-  until: "item in ingress_controller_pods_created.stdout"
-  retries: 10
-  delay: 30
-  with_items:
-    - nginx-ingress-controller
-
-- name: Wait for ingress nginx controller pods become ready
-  shell: |
-    /usr/local/bin/kubectl wait \
-      --namespace=ingress-nginx \
-      --selector app=ingress-nginx \
-      --for=condition=Ready pods \
-      --timeout=600s
-  register: ingress_controller_ready
+- name: Delete python code
+  ansible.builtin.file:
+    path: "$HOME/rke_cluster.py"
+    state: absent
+  delegate_to: rke_master1
+  run_once: true

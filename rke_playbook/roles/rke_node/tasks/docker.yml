@@ -8,10 +8,6 @@
   delay: 3
   retries: 3
 
-- name: Debug
-  debug:
-    var: download
-
 - name: Chmod Docker Install Shell
   become: true
   ansible.builtin.file:

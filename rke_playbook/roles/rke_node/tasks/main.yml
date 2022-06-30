@@ -3,6 +3,11 @@
 # - name: Upgrade CentOS
 #   include: kernel.yml
 
+- name: Update SSH Yum
+  yum:
+    name: openssh
+    state: latest
+
 # Dependencies K8s Package
 - name: NTP service
   include: ntp.yml
