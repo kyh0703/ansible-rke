@@ -53,7 +53,7 @@
     state: present
 
 - name: Source BashCompletion
-  shell: "kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null"
+  shell: "echo 'source <(kubectl completion bash)' >> ~/.bashrc"
 
 - name: Add a line Kubectl Alias
   ansible.builtin.lineinfile:
@@ -62,6 +62,3 @@
   with_items:
     - alias k=kubectl
     - complete -F __start_kubectl k
-
-- name: Source Bashrc
-  shell: source ~/.bashrc
